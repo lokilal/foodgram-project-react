@@ -59,6 +59,10 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
+    name = models.CharField(
+        max_length=200,
+        verbose_name='Название'
+    )
     tags = models.ManyToManyField(
         Tag, verbose_name='Теги'
     )
@@ -69,11 +73,8 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='NumberOfIngredients',
-        verbose_name='Кол-во ингредиентов'
-    )
-    name = models.CharField(
-        max_length=200,
-        verbose_name='Название'
+        verbose_name='Кол-во ингредиентов',
+        help_text='Укажите ингредиенты и их количество',
     )
     image = models.ImageField(
         verbose_name='Фото рецепта'
@@ -102,11 +103,13 @@ class Recipe(models.Model):
 class NumberOfIngredients(models.Model):
     ingredient = models.ForeignKey(
         Ingredient,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='ingredients_amounts',
     )
     recipe = models.ForeignKey(
         Recipe,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='ingredients_amounts',
     )
     amount = models.PositiveIntegerField(
         validators=[MinValueValidator(1, 'Минимальное кол-во равно 1')],
@@ -119,5 +122,5 @@ class NumberOfIngredients(models.Model):
         verbose_name_plural = 'Количество ингредиентов'
 
     def __str__(self):
-        return f'{self.amount} в таком рецепте: {self.recipe}'
+        return f'{self.amount}'
 
