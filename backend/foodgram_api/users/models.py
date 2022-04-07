@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
         verbose_name='Логин'
     )
     email = models.EmailField(
-        unique=True, max_length=150,
+        unique=True, max_length=254,
         verbose_name='Почта'
     )
     first_name = models.CharField(

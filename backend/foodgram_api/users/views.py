@@ -1,5 +1,5 @@
 from .serializers import FollowSerializer, ShowFollowSerializer
-from reviews.models import Follow
+from reviews.models import Favorites
 from djoser.views import UserViewSet
 from rest_framework.decorators import action
 from rest_framework import permissions
@@ -16,7 +16,6 @@ class CustomUserViewSet(UserViewSet):
     @action(
         detail=True, methods=['GET', 'DELETE'],
         url_path='subscribe', url_name='subscribe',
-        permission_classes=[permissions.IsAuthenticated]
     )
     def subscribe(self, request, id):
         author = get_object_or_404(User, id=id)
@@ -28,7 +27,7 @@ class CustomUserViewSet(UserViewSet):
             return Response(
                 serializer.data, status=status.HTTP_201_CREATED
             )
-        follow = get_object_or_404(Follow, user=request.user, author__id=id)
+        follow = get_object_or_404(Favorites, user=request.user, author__id=id)
         follow.delete()
         return Response(
             f'{request.user} отписался от {follow.author}'
@@ -37,7 +36,6 @@ class CustomUserViewSet(UserViewSet):
     @action(
         detail=False, methods=['GET'],
         url_path='subscriptions', url_name='subscriptions',
-        permissions_classes=[permissions.IsAuthenticated]
     )
     def show_follows(self, request):
         user_ojb = User.objects.filter(following__user=request.user)

@@ -73,8 +73,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='NumberOfIngredients',
-        verbose_name='Кол-во ингредиентов',
-        help_text='Укажите ингредиенты и их количество',
+        verbose_name='Кол-во ингредиентов'
     )
     image = models.ImageField(
         verbose_name='Фото рецепта'
@@ -122,5 +121,52 @@ class NumberOfIngredients(models.Model):
         verbose_name_plural = 'Количество ингредиентов'
 
     def __str__(self):
-        return f'{self.amount}'
+        return f'{self.ingredient} в {self.recipe}'
 
+
+class Favorites(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE
+    )
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        verbose_name = 'Избранное'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'], name='unique_favorite',
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.user} - {self.recipe}'
+
+
+class Purchase(models.Model):
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE
+    )
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE
+    )
+    pub_date = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ['-pub_date']
+        verbose_name = 'Покупки'
+        verbose_name_plural = 'Покупка'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'], name='unique_shopping_cart'
+            )
+        ]
+
+    def __str__(self):
+        return f'Пользователь {self.recipe} - рецепт {self.recipe}'
