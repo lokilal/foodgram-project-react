@@ -5,5 +5,5 @@ COPY . /app
 
 WORKDIR /app
 
-RUN python3 -m pip install --upgrade pip
+RUN ls
 CMD ls
