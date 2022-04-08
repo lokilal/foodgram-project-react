@@ -28,8 +28,7 @@ services:
       - media_value:/app/media/ 
 
   frontend:
-    build:
-      image: lokilal/frontend:latest
+    image: lokilal/frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
       
