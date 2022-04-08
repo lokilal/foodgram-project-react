@@ -18,6 +18,7 @@ djangorestframework-simplejwt==4.8.0
 djoser==2.1.0
 drf-extra-fields==3.4.0
 et-xmlfile==1.1.0
+flake8==4.0.1
 gunicorn==20.1.0
 idna==3.3
 iniconfig==1.1.1
@@ -26,6 +27,7 @@ itypes==1.2.0
 Jinja2==3.1.1
 MarkupPy==1.14
 MarkupSafe==2.1.1
+mccabe==0.6.1
 oauthlib==3.2.0
 odfpy==1.4.1
 openpyxl==3.0.9
@@ -34,12 +36,15 @@ Pillow==9.1.0
 pluggy==0.13.1
 psycopg2-binary==2.9.3
 py==1.11.0
+pycodestyle==2.8.0
 pycparser==2.21
+pyflakes==2.4.0
 PyJWT==2.1.0
 pyparsing==3.0.6
 pytest==6.2.4
 pytest-django==4.4.0
 pytest-pythonpath==0.7.3
+python-dotenv==0.20.0
 python3-openid==3.2.0
 pytz==2021.3
 PyYAML==6.0
