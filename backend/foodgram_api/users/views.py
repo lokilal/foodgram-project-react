@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Follow
-from .serializers import FollowSerializer, ShowFollowSerializer
 from .paginator import CustomPageNumberPaginator
+from .serializers import FollowSerializer, ShowFollowSerializer
 
 User = get_user_model()
 
