@@ -4,8 +4,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from users.paginator import CustomPageNumberPaginator
 
+from users.paginator import CustomPageNumberPaginator
 from .filters import IngredientsFilter, RecipeFilter
 from .mixins import RetriveAndListViewSet
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,

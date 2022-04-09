@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import UniqueConstraint
 
 User = get_user_model()
 
@@ -116,8 +115,8 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
-        constraints = [UniqueConstraint(fields=['ingredient', 'recipe'],
-                                        name='unique_recipe_ingredient')]
+        constraints = [models.UniqueConstraint(fields=['ingredient', 'recipe'],
+                                               name='unique_recipe_ingredient')]
         verbose_name = 'Ингридиенты'
         verbose_name_plural = 'Ингридиенты'
 
@@ -138,8 +137,8 @@ class RecipeTag(models.Model):
     )
 
     class Meta:
-        constraints = [UniqueConstraint(fields=['tag', 'recipe'],
-                                        name='unique_recipe_tag')]
+        constraints = [models.UniqueConstraint(fields=['tag', 'recipe'],
+                                               name='unique_recipe_tag')]
         verbose_name = 'Теги рецепта'
         verbose_name_plural = 'Теги рецепта'
 
