@@ -57,8 +57,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @favorite.mapping.delete
     def delete_favorite(self, request, pk):
-        if request.user.is_anonymous:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
         recipe = get_object_or_404(Recipe, id=pk)
         try:
             Favorite.objects.get(user=request.user, recipe=recipe).delete()
@@ -80,8 +78,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @shopping_cart.mapping.delete
     def delete_shopping_cart(self, request, pk):
-        if request.user.is_anonymous:
-            return Response(status=status.HTTP_401_UNAUTHORIZED)
         try:
             recipe = Recipe.objects.get(id=pk)
             shopping_list = ShoppingList.objects.get(
@@ -108,5 +104,5 @@ class RecipeViewSet(viewsets.ModelViewSet):
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit'
-        ).annotate(amount=Sum('amount'))
+        ).annotate(count=Sum('amount'))
         return download_file_response(ingredients_list)

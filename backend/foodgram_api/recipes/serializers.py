@@ -106,7 +106,7 @@ class AddRecipeSerializer(serializers.ModelSerializer):
                   'name', 'image', 'text', 'cooking_time')
 
     def validate_ingredients(self, data):
-        ingredients = self.initial_data.get('ingredients')
+        ingredients = self.data.get('ingredients')
         if not ingredients:
             raise ValidationError('Не выбрано ни одного ингредиента!')
         ingredients_ids = [ingredient['id'] for ingredient in ingredients]
@@ -160,11 +160,11 @@ class AddRecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, recipe, validated_data):
-        if 'ingredients' in self.initial_data:
+        if 'ingredients' in self.data:
             ingredients = validated_data.pop('ingredients')
             recipe.ingredients.clear()
             self.add_recipe_ingredients(ingredients, recipe)
-        if 'tags' in self.initial_data:
+        if 'tags' in self.data:
             tags_data = validated_data.pop('tags')
             recipe.tags.set(tags_data)
         return super().update(recipe, validated_data)
