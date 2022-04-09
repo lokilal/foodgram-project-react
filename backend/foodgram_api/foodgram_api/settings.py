@@ -6,7 +6,7 @@ load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = '(i$$fr=lg=6z9weq#%tqzy0khyhxe%oi-ddi^t1!#!iz65^l1v'
+SECRET_KEY = os.getenv('SECRET_KEY', default='SECRET_KEY')
 
 DEBUG = True
 
@@ -66,6 +66,7 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
+
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
