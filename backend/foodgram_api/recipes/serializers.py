@@ -105,8 +105,10 @@ class AddRecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'tags', 'author', 'ingredients',
                   'name', 'image', 'text', 'cooking_time')
 
-    def validate_ingredients(self, data):
-        ingredients = self.data.get('ingredients')
+    def validate(self, attrs):
+        tags = attrs.get('tags')
+        cooking_time = attrs.get('cooking_time')
+        ingredients = attrs.get('ingredients')
         if not ingredients:
             raise ValidationError('Не выбрано ни одного ингредиента!')
         ingredients_ids = [ingredient['id'] for ingredient in ingredients]
@@ -116,24 +118,16 @@ class AddRecipeSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             if int(ingredient['amount']) <= 0:
                 raise ValidationError('Количество должно быть положительным!')
-            pk = int(ingredient['id'])
-            if pk < 0:
-                raise ValidationError('id элемента не может быть '
-                                      'отрицательным')
-        return data
-
-    def validate_tags(self, data):
-        if not data:
+        if tags is None:
             raise ValidationError('Необходимо отметить хотя бы один тег')
-        if len(data) != len(set(data)):
+        elif len(tags) != len(set(tags)):
             raise ValidationError('Один тег указан дважды')
-        return data
-
-    def validate_cooking_time(self, data):
-        if data <= 0:
+        if cooking_time is None:
+            raise ValidationError('Необходимо указать время')
+        elif cooking_time <= 0:
             raise ValidationError('Время готовки должно быть положительным'
                                   'числом, не менее 1 минуты!')
-        return data
+        return attrs
 
     def add_recipe_ingredients(self, ingredients, recipe):
         for ingredient in ingredients:
@@ -160,11 +154,11 @@ class AddRecipeSerializer(serializers.ModelSerializer):
         return recipe
 
     def update(self, recipe, validated_data):
-        if 'ingredients' in self.data:
+        if validated_data.get('ingredients') is not None:
             ingredients = validated_data.pop('ingredients')
             recipe.ingredients.clear()
             self.add_recipe_ingredients(ingredients, recipe)
-        if 'tags' in self.data:
+        if validated_data.get('tags') is not None:
             tags_data = validated_data.pop('tags')
             recipe.tags.set(tags_data)
         return super().update(recipe, validated_data)
