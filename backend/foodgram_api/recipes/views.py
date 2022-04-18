@@ -4,6 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+
 from users.paginator import CustomPageNumberPaginator
 
 from .filters import IngredientsFilter, RecipeFilter
@@ -16,7 +17,6 @@ from .serializers import (AddRecipeSerializer, FavouriteSerializer,
                           ShowRecipeFullSerializer, TagsSerializer)
 from .utils import download_file_response
 
-from rest_framework.response import Response
 
 class IngredientsViewSet(RetriveAndListViewSet):
     queryset = Ingredient.objects.all()
