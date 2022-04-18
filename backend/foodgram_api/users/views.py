@@ -14,7 +14,7 @@ User = get_user_model()
 class FollowApiView(APIView):
     permission_classes = [permissions.IsAuthenticated, ]
 
-    def get(self, request, id):
+    def post(self, request, id):
         data = {'user': request.user.id, 'author': id}
         serializer = FollowSerializer(data=data, context={'request': request})
         serializer.is_valid(raise_exception=True)

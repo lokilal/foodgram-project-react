@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-from rest_framework.serializers import ValidationError
+
 from users.serializers import CustomUserSerializer
 
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
@@ -110,23 +110,35 @@ class AddRecipeSerializer(serializers.ModelSerializer):
         cooking_time = attrs.get('cooking_time')
         ingredients = attrs.get('ingredients')
         if not ingredients:
-            raise ValidationError('Не выбрано ни одного ингредиента!')
+            raise serializers.ValidationError(
+                'Не выбрано ни одного ингредиента!'
+            )
         ingredients_ids = [ingredient['id'] for ingredient in ingredients]
         if len(ingredients) != len(set(ingredients_ids)):
             raise serializers.ValidationError('Вы не можете добавить один '
                                               'ингредиент дважды')
         for ingredient in ingredients:
             if int(ingredient['amount']) <= 0:
-                raise ValidationError('Количество должно быть положительным!')
+                raise serializers.ValidationError(
+                    'Количество должно быть положительным!'
+                )
         if tags is None:
-            raise ValidationError('Необходимо отметить хотя бы один тег')
+            raise serializers.ValidationError(
+                'Необходимо отметить хотя бы один тег'
+            )
         elif len(tags) != len(set(tags)):
-            raise ValidationError('Один тег указан дважды')
+            raise serializers.ValidationError(
+                'Один тег указан дважды'
+            )
         if cooking_time is None:
-            raise ValidationError('Необходимо указать время')
+            raise serializers.ValidationError(
+                'Необходимо указать время'
+            )
         elif cooking_time <= 0:
-            raise ValidationError('Время готовки должно быть положительным'
-                                  'числом, не менее 1 минуты!')
+            raise serializers.ValidationError(
+                'Время готовки должно быть положительным'
+                'числом, не менее 1 минуты!'
+            )
         return attrs
 
     def add_recipe_ingredients(self, ingredients, recipe):
@@ -182,7 +194,9 @@ class FavouriteSerializer(serializers.ModelSerializer):
         user = data['user']
         recipe_id = data['recipe'].id
         if Favorite.objects.filter(user=user, recipe__id=recipe_id).exists():
-            raise ValidationError('Рецепт уже добавлен в избранное!')
+            raise serializers.ValidationError(
+                'Рецепт уже добавлен в избранное!'
+            )
         return data
 
     def to_representation(self, instance):
@@ -204,7 +218,9 @@ class ShoppingListSerializer(serializers.ModelSerializer):
         recipe_id = data['recipe'].id
         if ShoppingList.objects.filter(user=user,
                                        recipe__id=recipe_id).exists():
-            raise ValidationError('Рецепт уже добавлен в список покупок!')
+            raise serializers.ValidationError(
+                'Рецепт уже добавлен в список покупок!'
+            )
         return data
 
     def to_representation(self, instance):

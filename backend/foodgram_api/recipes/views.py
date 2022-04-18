@@ -16,6 +16,7 @@ from .serializers import (AddRecipeSerializer, FavouriteSerializer,
                           ShowRecipeFullSerializer, TagsSerializer)
 from .utils import download_file_response
 
+from rest_framework.response import Response
 
 class IngredientsViewSet(RetriveAndListViewSet):
     queryset = Ingredient.objects.all()
@@ -54,35 +55,34 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def delete(self, request, pk, model):
+    def deletion(self, request, pk, model):
         recipe = get_object_or_404(Recipe, id=pk)
-        try:
-            model.objects.get(
-                user=request.user,
-                recipe=recipe,
-            ).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except model.DoesNotExist:
-            return Response(
-                'Нет данного рецепта',
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        obj = get_object_or_404(
+            model, user=request.user,
+            recipe=recipe
+        )
+        obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, permission_classes=[IsAuthorOrAdmin])
-    def favorite(self, request, pk):
+    @action(detail=True,
+            permission_classes=[permissions.IsAuthenticated], methods=['POST']
+            )
+    def favorite(self, request, pk=None):
         return self.add(request, pk, FavouriteSerializer)
 
     @favorite.mapping.delete
-    def delete_favorite(self, request, pk):
-        return self.delete(request, pk, Favorite)
+    def delete_favorite(self, request, pk=None):
+        return self.deletion(request, pk, Favorite)
 
-    @action(detail=True, permission_classes=[IsAuthorOrAdmin])
-    def shopping_cart(self, request, pk):
+    @action(detail=True,
+            permission_classes=[permissions.IsAuthenticated], methods=['POST']
+            )
+    def shopping_cart(self, request, pk=None):
         return self.add(request, pk, ShoppingListSerializer)
 
     @shopping_cart.mapping.delete
-    def delete_shopping_cart(self, request, pk):
-        return self.delete(request, pk, ShoppingList)
+    def delete_shopping_cart(self, request, pk=None):
+        return self.deletion(request, pk, ShoppingList)
 
     @action(detail=False, permission_classes=[permissions.IsAuthenticated])
     def download_shopping_cart(self, request):
