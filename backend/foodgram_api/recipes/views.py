@@ -4,43 +4,41 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from users.paginator import CustomPageNumberPaginator
+from rest_framework.pagination import LimitOffsetPagination
 
 from .filters import IngredientsFilter, RecipeFilter
-from .mixins import RetriveAndListViewSet
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                      ShoppingList, Tag)
-from .permissions import IsAuthorOrAdmin
+from .permissions import IsAuthorOrAdmin, IsAdminOrReadOnly
 from .serializers import (AddRecipeSerializer, FavouriteSerializer,
                           IngredientsSerializer, ShoppingListSerializer,
                           ShowRecipeFullSerializer, TagsSerializer)
 from .utils import download_file_response
 
 
-class IngredientsViewSet(RetriveAndListViewSet):
+class IngredientsViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientsSerializer
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = IngredientsFilter
-    pagination_class = None
 
 
-class TagsViewSet(RetriveAndListViewSet):
+class TagsViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagsSerializer
-    permission_classes = [permissions.AllowAny]
-    pagination_class = None
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by('-id')
-    serializer_class = ShowRecipeFullSerializer
     permission_classes = [IsAuthorOrAdmin]
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = (DjangoFilterBackend, )
     filterset_class = RecipeFilter
-    pagination_class = CustomPageNumberPaginator
+    pagination_class = LimitOffsetPagination
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
