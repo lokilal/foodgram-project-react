@@ -7,6 +7,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from users.paginator import CustomPageNumberPaginator
 from .filters import IngredientsFilter, RecipeFilter
 from .models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                      ShoppingList, Tag)
@@ -36,7 +37,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthorOrAdmin]
     filter_backends = (DjangoFilterBackend, )
     filterset_class = RecipeFilter
-    pagination_class = LimitOffsetPagination
+    pagination_class = CustomPageNumberPaginator
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
