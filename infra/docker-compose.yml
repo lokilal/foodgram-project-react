@@ -49,5 +49,4 @@ services:
       - media_value:/media/
     depends_on:
       - web
-      - frontend
 
