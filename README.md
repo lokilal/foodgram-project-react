@@ -91,3 +91,5 @@ TELEGRAM_TOKEN=<токен бота>
 sudo docker-compose exec web python manage.py migrate 
 sudo docker-compose exec web python manage.py collectstatic --no-input
 ```
+
+[![Django-app workfow](https://github.com/lokilal/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)](https://github.com/lokilal/foodgram-project-react/actions/workflows/foodgram_workflow.yml)
